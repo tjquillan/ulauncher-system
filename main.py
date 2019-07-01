@@ -31,8 +31,6 @@ class KeywordQueryEventListener(EventListener):
     def __init__(self):
         icon_theme: Gtk.IconTheme = Gtk.IconTheme.get_default()
         commands: Dict[Items, Optional[str]] = get_commands()
-
-        logger.info(get_icon("preferences-system-session-services", icon_theme))
         self._items: Dict[Items, ExtensionResultItem] = {
             item: ExtensionResultItem(icon=get_icon(ITEM_ICONS[item.value], icon_theme),
                                       name=ITEM_NAMES[item.value],
