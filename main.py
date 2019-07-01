@@ -1,8 +1,10 @@
 import logging
 import os
+
 from typing import Dict, List, Optional
 
 import gi
+
 from ulauncher.api.client.EventListener import EventListener
 from ulauncher.api.client.Extension import Extension
 from ulauncher.api.shared.action.RenderResultListAction import RenderResultListAction
@@ -19,6 +21,7 @@ from constants import (
     Desktops,
     Items,
 )
+
 
 gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk  # isort:skip # noqa: E261
@@ -73,7 +76,7 @@ def get_icon(name: str, icon_theme) -> str:
 def get_commands() -> Dict[Items, Optional[str]]:
     commands: Dict[Items, Optional[str]] = {
         Items.LOCK: "xdg-screensaver lock",
-        Items.LOGOUT: None,
+        Items.LOGOUT: "pkill -u $USER",
         Items.SUSPEND: "systemctl suspend -i",
         Items.HIBERNATE: "systemctl hibernate -i",
         Items.REBOOT: "systemctl reboot -i",
