@@ -5,23 +5,28 @@ from typing import Dict, List, Optional
 import gi
 from ulauncher.api.client.EventListener import EventListener
 from ulauncher.api.client.Extension import Extension
-from ulauncher.api.shared.action.RenderResultListAction import \
-    RenderResultListAction
+from ulauncher.api.shared.action.RenderResultListAction import RenderResultListAction
 from ulauncher.api.shared.action.RunScriptAction import RunScriptAction
 from ulauncher.api.shared.event import KeywordQueryEvent
 from ulauncher.api.shared.item.ExtensionResultItem import ExtensionResultItem
 
-from constants import (DESKTOP_ALIASES, ITEM_ALIASES, ITEM_DESCRIPTIONS,
-                       ITEM_ICONS, ITEM_NAMES, Desktops, Items)
+from constants import (
+    DESKTOP_ALIASES,
+    ITEM_ALIASES,
+    ITEM_DESCRIPTIONS,
+    ITEM_ICONS,
+    ITEM_NAMES,
+    Desktops,
+    Items,
+)
 
-gi.require_version('Gtk', '3.0')
-from gi.repository import Gtk # isort:skip # noqa: E261
+gi.require_version("Gtk", "3.0")
+from gi.repository import Gtk  # isort:skip # noqa: E261
 
 logger: logging.Logger = logging.getLogger(__name__)
 
 
 class SystemExtension(Extension):
-
     def __init__(self):
         super(SystemExtension, self).__init__()
         self.subscribe(KeywordQueryEvent, KeywordQueryEventListener())
@@ -32,10 +37,12 @@ class KeywordQueryEventListener(EventListener):
         icon_theme: Gtk.IconTheme = Gtk.IconTheme.get_default()
         commands: Dict[Items, Optional[str]] = get_commands()
         self._items: Dict[Items, ExtensionResultItem] = {
-            item: ExtensionResultItem(icon=get_icon(ITEM_ICONS[item.value], icon_theme),
-                                      name=ITEM_NAMES[item.value],
-                                      description=ITEM_DESCRIPTIONS[item.value],
-                                      on_enter=RunScriptAction(commands[item]))
+            item: ExtensionResultItem(
+                icon=get_icon(ITEM_ICONS[item.value], icon_theme),
+                name=ITEM_NAMES[item.value],
+                description=ITEM_DESCRIPTIONS[item.value],
+                on_enter=RunScriptAction(commands[item]),
+            )
             for item in Items
         }
 
@@ -52,7 +59,9 @@ class KeywordQueryEventListener(EventListener):
 
 
 def get_icon(name: str, icon_theme) -> str:
-    icon: Gtk.IconInfo = icon_theme.lookup_icon(name, 32, Gtk.IconLookupFlags.GENERIC_FALLBACK)
+    icon: Gtk.IconInfo = icon_theme.lookup_icon(
+        name, 32, Gtk.IconLookupFlags.GENERIC_FALLBACK
+    )
 
     if icon:
         return icon.get_filename()
@@ -85,7 +94,9 @@ def get_commands() -> Dict[Items, Optional[str]]:
         commands[Items.REBOOT] = "gnome-session-quit --reboot"
         commands[Items.POWEROFF] = "gnome-session-quit --power-off"
     elif desktop_type is Desktops.KDE:
-        commands[Items.LOCK] = "dbus-send --dest=org.freedesktop.ScreenSaver --type=method_call /ScreenSaver org.freedesktop.ScreenSaver.Lock"
+        commands[
+            Items.LOCK
+        ] = "dbus-send --dest=org.freedesktop.ScreenSaver --type=method_call /ScreenSaver org.freedesktop.ScreenSaver.Lock"
         commands[Items.LOGOUT] = "qdbus org.kde.ksmserver /KSMServer logout 0 0 0"
         commands[Items.REBOOT] = "qdbus org.kde.ksmserver /KSMServer logout 0 1 0"
         commands[Items.POWEROFF] = "qdbus org.kde.ksmserver /KSMServer logout 0 2 0"
@@ -97,8 +108,12 @@ def get_commands() -> Dict[Items, Optional[str]]:
     elif desktop_type is Desktops.MATE:
         commands[Items.LOCK] = "mate-screensaver-command --lock"
         commands[Items.LOGOUT] = "mate-session-save --logout-dialog"
-        commands[Items.SUSPEND] = "sh -c \"mate-screensaver-command --lock && systemctl suspend -i\""
-        commands[Items.HIBERNATE] = "sh -c \"mate-screensaver-command --lock && systemctl hibernate -i\""
+        commands[
+            Items.SUSPEND
+        ] = 'sh -c "mate-screensaver-command --lock && systemctl suspend -i"'
+        commands[
+            Items.HIBERNATE
+        ] = 'sh -c "mate-screensaver-command --lock && systemctl hibernate -i"'
         commands[Items.REBOOT] = "mate-session-save --shutdown-dialog"
         commands[Items.POWEROFF] = "mate-session-save --shutdown-dialog"
     elif desktop_type is Desktops.XFCE:
@@ -112,5 +127,5 @@ def get_commands() -> Dict[Items, Optional[str]]:
     return commands
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     SystemExtension().run()
