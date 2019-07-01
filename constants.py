@@ -1,4 +1,5 @@
 from enum import Enum, unique
+from typing import Dict, List
 
 
 @unique
@@ -20,7 +21,7 @@ class Desktops(Enum):
     XFCE = 4
 
 
-ITEM_NAMES: list = [
+ITEM_NAMES: List[str] = [
     "Lock",
     "Log out",
     "Suspend",
@@ -29,7 +30,7 @@ ITEM_NAMES: list = [
     "Shut down",
 ]
 
-ITEM_DESCRIPTIONS: list = [
+ITEM_DESCRIPTIONS: List[str] = [
     "Lock the session.",
     "Quit the session.",
     "Suspend to memory.",
@@ -38,7 +39,7 @@ ITEM_DESCRIPTIONS: list = [
     "Shut down the machine.",
 ]
 
-ITEM_ICONS: list = [
+ITEM_ICONS: List[str] = [
     "system-lock-screen",
     "system-log-out",
     "system-suspend",
@@ -47,7 +48,7 @@ ITEM_ICONS: list = [
     "system-shutdown",
 ]
 
-ITEM_ALIASES: list = [
+ITEM_ALIASES: List[List[str]] = [
     ["lock"],
     ["log out", "logout", "leave"],
     ["suspend", "sleep"],
@@ -56,7 +57,7 @@ ITEM_ALIASES: list = [
     ["shut down", "shutdown", "poweroff", "halt"],
 ]
 
-DESKTOP_ALIASES: dict = {
+DESKTOP_ALIASES: Dict[Desktops, List[str]] = {
     Desktops.GNOME: ["Unity", "Pantheon", "GNOME"],
     Desktops.KDE: ["kde-plasma", "KDE"],
     Desktops.CINNAMON: ["X-Cinnamon", "Cinnamon"],

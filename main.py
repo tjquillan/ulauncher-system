@@ -1,30 +1,23 @@
 import logging
 import os
+from typing import Dict, List, Optional
 
 import gi
-
 from ulauncher.api.client.EventListener import EventListener
 from ulauncher.api.client.Extension import Extension
-from ulauncher.api.shared.action.RenderResultListAction import RenderResultListAction
+from ulauncher.api.shared.action.RenderResultListAction import \
+    RenderResultListAction
 from ulauncher.api.shared.action.RunScriptAction import RunScriptAction
 from ulauncher.api.shared.event import KeywordQueryEvent
 from ulauncher.api.shared.item.ExtensionResultItem import ExtensionResultItem
 
-from constants import (
-    DESKTOP_ALIASES,
-    ITEM_ALIASES,
-    ITEM_DESCRIPTIONS,
-    ITEM_ICONS,
-    ITEM_NAMES,
-    Desktops,
-    Items,
-)
-
+from constants import (DESKTOP_ALIASES, ITEM_ALIASES, ITEM_DESCRIPTIONS,
+                       ITEM_ICONS, ITEM_NAMES, Desktops, Items)
 
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk # isort:skip # noqa: E261
 
-logger = logging.getLogger(__name__)
+logger: logging.Logger = logging.getLogger(__name__)
 
 
 class SystemExtension(Extension):
@@ -36,11 +29,11 @@ class SystemExtension(Extension):
 
 class KeywordQueryEventListener(EventListener):
     def __init__(self):
-        icon_theme = Gtk.IconTheme.get_default()
-        commands = get_commands()
+        icon_theme: Gtk.IconTheme = Gtk.IconTheme.get_default()
+        commands: Dict[Items, Optional[str]] = get_commands()
 
         logger.info(get_icon("preferences-system-session-services", icon_theme))
-        self._items = {
+        self._items: Dict[Items, ExtensionResultItem] = {
             item: ExtensionResultItem(icon=get_icon(ITEM_ICONS[item.value], icon_theme),
                                       name=ITEM_NAMES[item.value],
                                       description=ITEM_DESCRIPTIONS[item.value],
@@ -49,9 +42,9 @@ class KeywordQueryEventListener(EventListener):
         }
 
     def on_event(self, event: KeywordQueryEvent, extension):
-        arg = event.get_argument()
+        arg: str = event.get_argument()
         if arg:
-            items = []
+            items: List[ExtensionResultItem] = []
             for aliases in ITEM_ALIASES:
                 if any(arg in s for s in aliases):
                     items.append(self._items[Items(aliases.index(aliases))])
@@ -61,7 +54,7 @@ class KeywordQueryEventListener(EventListener):
 
 
 def get_icon(name: str, icon_theme) -> str:
-    icon = icon_theme.lookup_icon(name, 32, Gtk.IconLookupFlags.GENERIC_FALLBACK)
+    icon: Gtk.IconInfo = icon_theme.lookup_icon(name, 32, Gtk.IconLookupFlags.GENERIC_FALLBACK)
 
     if icon:
         return icon.get_filename()
@@ -70,8 +63,8 @@ def get_icon(name: str, icon_theme) -> str:
         return ""
 
 
-def get_commands() -> dict:
-    commands = {
+def get_commands() -> Dict[Items, Optional[str]]:
+    commands: Dict[Items, Optional[str]] = {
         Items.LOCK: "xdg-screensaver lock",
         Items.LOGOUT: None,
         Items.SUSPEND: "systemctl suspend -i",
@@ -80,9 +73,9 @@ def get_commands() -> dict:
         Items.POWEROFF: "systemctl poweroff -i",
     }
 
-    current_desktop = os.environ.get("XDG_CURRENT_DESKTOP")
+    current_desktop: str = os.environ.get("XDG_CURRENT_DESKTOP")
 
-    desktop_type = None
+    desktop_type: Desktops = None
     for desktop in DESKTOP_ALIASES:
         if any(current_desktop in s for s in DESKTOP_ALIASES[desktop]):
             desktop_type = desktop
