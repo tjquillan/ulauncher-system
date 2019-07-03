@@ -53,11 +53,13 @@ class KeywordQueryEventListener(EventListener):
     def on_event(self, event: KeywordQueryEvent, extension):
         arg: str = event.get_argument()
         if arg:
-            items: List[ExtensionResultItem] = []
-            for aliases in ITEM_ALIASES:
-                if any(arg in s for s in aliases):
-                    items.append(self._items[Items(ITEM_ALIASES.index(aliases))])
-            return RenderResultListAction(items)
+            return RenderResultListAction(
+                [
+                    self._items[Items(ITEM_ALIASES.index(aliases))]
+                    for aliases in ITEM_ALIASES
+                    if any(arg in s for s in aliases)
+                ]
+            )
         else:
             return RenderResultListAction([item for item in self._items.values()])
 
