@@ -1,7 +1,7 @@
 import logging
 import os
 
-from typing import Dict, List, Optional
+from typing import Dict, Optional
 
 import gi
 
@@ -86,7 +86,7 @@ def get_commands() -> Dict[Items, Optional[str]]:
         Items.POWEROFF: "systemctl poweroff -i",
     }
 
-    current_desktop: str = os.environ.get("XDG_CURRENT_DESKTOP")
+    current_desktop: str = os.environ.get("XDG_CURRENT_DESKTOP")  # type: ignore
 
     desktop_type: Optional[Desktops] = None
     for desktop in DESKTOP_ALIASES:
