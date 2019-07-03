@@ -47,6 +47,7 @@ class KeywordQueryEventListener(EventListener):
                 on_enter=RunScriptAction(commands[item]),
             )
             for item in Items
+            if commands[item]
         }
 
     def on_event(self, event: KeywordQueryEvent, extension):
@@ -76,7 +77,7 @@ def get_icon(name: str, icon_theme) -> str:
 def get_commands() -> Dict[Items, Optional[str]]:
     commands: Dict[Items, Optional[str]] = {
         Items.LOCK: "xdg-screensaver lock",
-        Items.LOGOUT: "pkill -u $USER",
+        Items.LOGOUT: None,
         Items.SUSPEND: "systemctl suspend -i",
         Items.HIBERNATE: "systemctl hibernate -i",
         Items.REBOOT: "systemctl reboot -i",
