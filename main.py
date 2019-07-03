@@ -56,7 +56,7 @@ class KeywordQueryEventListener(EventListener):
             items: List[ExtensionResultItem] = []
             for aliases in ITEM_ALIASES:
                 if any(arg in s for s in aliases):
-                    items.append(self._items[Items(aliases.index(aliases))])
+                    items.append(self._items[Items(ITEM_ALIASES.index(aliases))])
             return RenderResultListAction(items)
         else:
             return RenderResultListAction([item for item in self._items.values()])
@@ -86,7 +86,7 @@ def get_commands() -> Dict[Items, Optional[str]]:
 
     current_desktop: str = os.environ.get("XDG_CURRENT_DESKTOP")
 
-    desktop_type: Desktops = None
+    desktop_type: Optional[Desktops] = None
     for desktop in DESKTOP_ALIASES:
         if any(current_desktop in s for s in DESKTOP_ALIASES[desktop]):
             desktop_type = desktop
