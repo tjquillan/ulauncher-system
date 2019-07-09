@@ -20,7 +20,7 @@ from gi.repository import Gtk  # isort:skip # noqa: E261
 logger: logging.Logger = logging.getLogger(__name__)
 
 
-class Entry():
+class Entry:
     def __init__(self, data: dict, desktop: str, icon_theme: Gtk.IconTheme):
         def get_icon(name) -> str:
             icon: Gtk.IconInfo = icon_theme.lookup_icon(
@@ -60,7 +60,7 @@ class Entry():
         return self.__command
 
 
-class EntryIndex():
+class EntryIndex:
     def __init__(self):
         def get_desktop(desktops: dict) -> str:
             current_desktop = os.environ.get("XDG_CURRENT_DESKTOP")
@@ -71,7 +71,9 @@ class EntryIndex():
 
             return "default"
 
-        data = json.load(open("{}/data.json".format(os.path.dirname(os.path.realpath(__file__)))))
+        data = json.load(
+            open("{}/data.json".format(os.path.dirname(os.path.realpath(__file__))))
+        )
         desktop: str = get_desktop(data["desktops"])
         icon_theme: Gtk.IconTheme = Gtk.IconTheme.get_default()
 
@@ -81,8 +83,7 @@ class EntryIndex():
             if Entry(data["entries"][entry], desktop, icon_theme).command
         }
         self.__aliases: List[List[str]] = [
-            entry.aliases
-            for entry in self.__entries.values()
+            entry.aliases for entry in self.__entries.values()
         ]
 
     def get_entry(self, id) -> Entry:
