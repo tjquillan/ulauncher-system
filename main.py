@@ -71,7 +71,7 @@ class EntryIndex():
 
             return "default"
 
-        data = json.load(open("data.json"))
+        data = json.load(open("{}/data.json".format(os.path.dirname(os.path.realpath(__file__)))))
         desktop: str = get_desktop(data["desktops"])
         icon_theme: Gtk.IconTheme = Gtk.IconTheme.get_default()
 
