@@ -1,7 +1,8 @@
+import json
 import logging
 import os
 
-from typing import Dict, Optional
+from typing import Dict, List
 
 import gi
 
@@ -12,21 +13,88 @@ from ulauncher.api.shared.action.RunScriptAction import RunScriptAction
 from ulauncher.api.shared.event import KeywordQueryEvent
 from ulauncher.api.shared.item.ExtensionResultItem import ExtensionResultItem
 
-from constants import (
-    DESKTOP_ALIASES,
-    ITEM_ALIASES,
-    ITEM_DESCRIPTIONS,
-    ITEM_ICONS,
-    ITEM_NAMES,
-    Desktops,
-    Items,
-)
-
 
 gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk  # isort:skip # noqa: E261
 
 logger: logging.Logger = logging.getLogger(__name__)
+
+
+class Entry():
+    def __init__(self, data: dict, desktop: str, icon_theme: Gtk.IconTheme):
+        def get_icon(name) -> str:
+            icon: Gtk.IconInfo = icon_theme.lookup_icon(
+                name, 32, Gtk.IconLookupFlags.GENERIC_FALLBACK
+            )
+
+            if icon:
+                return icon.get_filename()
+            else:
+                logger.warning("No icon found for: {}".format(name))
+                return ""
+
+        self.__name: str = data["name"]
+        self.__description: str = data["description"]
+        self.__icon: str = get_icon(data["icon"])
+        self.__aliases: List[str] = data["aliases"]
+        self.__command: str = data["commands"][desktop] or data["commands"]["default"]
+
+    @property
+    def name(self) -> str:
+        return self.__name
+
+    @property
+    def description(self) -> str:
+        return self.__description
+
+    @property
+    def icon(self) -> str:
+        return self.__icon
+
+    @property
+    def aliases(self) -> List[str]:
+        return self.__aliases
+
+    @property
+    def command(self) -> str:
+        return self.__command
+
+
+class EntryIndex():
+    def __init__(self):
+        def get_desktop(desktops: dict) -> str:
+            current_desktop = os.environ.get("XDG_CURRENT_DESKTOP")
+
+            for desktop in desktops.keys():
+                if any(current_desktop in s for s in desktops[desktop]):
+                    return desktop
+
+            return "default"
+
+        data = json.load(open("data.json"))
+        desktop: str = get_desktop(data["desktops"])
+        icon_theme: Gtk.IconTheme = Gtk.IconTheme.get_default()
+
+        self.__entries: Dict[str, Entry] = {
+            entry: Entry(data["entries"][entry], desktop, icon_theme)
+            for entry in data["entries"].keys()
+            if Entry(data["entries"][entry], desktop, icon_theme).command
+        }
+        self.__aliases: List[List[str]] = [
+            entry.aliases
+            for entry in self.__entries.values()
+        ]
+
+    def get_entry(self, id) -> Entry:
+        return self.__entries[id]
+
+    @property
+    def entries(self) -> Dict[str, Entry]:
+        return self.__entries
+
+    @property
+    def aliases(self) -> List[List[str]]:
+        return self.__aliases
 
 
 class SystemExtension(Extension):
@@ -37,100 +105,29 @@ class SystemExtension(Extension):
 
 class KeywordQueryEventListener(EventListener):
     def __init__(self):
-        icon_theme: Gtk.IconTheme = Gtk.IconTheme.get_default()
-        commands: Dict[Items, Optional[str]] = get_commands()
-        self._items: Dict[Items, ExtensionResultItem] = {
-            item: ExtensionResultItem(
-                icon=get_icon(ITEM_ICONS[item.value], icon_theme),
-                name=ITEM_NAMES[item.value],
-                description=ITEM_DESCRIPTIONS[item.value],
-                on_enter=RunScriptAction(commands[item]),
+        self.__entries: EntryIndex = EntryIndex()
+        self.__result_items: List[ExtensionResultItem] = [
+            ExtensionResultItem(
+                icon=entry.icon,
+                name=entry.name,
+                description=entry.description,
+                on_enter=RunScriptAction(entry.command),
             )
-            for item in Items
-            if commands[item]
-        }
+            for entry in self.__entries.entries.values()
+        ]
 
     def on_event(self, event: KeywordQueryEvent, extension):
         arg: str = event.get_argument()
         if arg:
             return RenderResultListAction(
                 [
-                    self._items[Items(ITEM_ALIASES.index(aliases))]
-                    for aliases in ITEM_ALIASES
+                    self.__result_items[self.__entries.aliases.index(aliases)]
+                    for aliases in self.__entries.aliases
                     if any(arg in s for s in aliases)
                 ]
             )
         else:
-            return RenderResultListAction([item for item in self._items.values()])
-
-
-def get_icon(name: str, icon_theme) -> str:
-    icon: Gtk.IconInfo = icon_theme.lookup_icon(
-        name, 32, Gtk.IconLookupFlags.GENERIC_FALLBACK
-    )
-
-    if icon:
-        return icon.get_filename()
-    else:
-        logger.warning("No icon found for: {}".format(name))
-        return ""
-
-
-def get_commands() -> Dict[Items, Optional[str]]:
-    commands: Dict[Items, Optional[str]] = {
-        Items.LOCK: "xdg-screensaver lock",
-        Items.LOGOUT: None,
-        Items.SUSPEND: "systemctl suspend -i",
-        Items.HIBERNATE: "systemctl hibernate -i",
-        Items.REBOOT: "systemctl reboot -i",
-        Items.POWEROFF: "systemctl poweroff -i",
-    }
-
-    current_desktop: str = os.environ.get("XDG_CURRENT_DESKTOP")  # type: ignore
-
-    desktop_type: Optional[Desktops] = None
-    for desktop in DESKTOP_ALIASES:
-        if any(current_desktop in s for s in DESKTOP_ALIASES[desktop]):
-            desktop_type = desktop
-            break
-
-    if desktop_type is Desktops.GNOME:
-        commands[Items.LOCK] = "gnome-screensaver-command --lock"
-        commands[Items.LOGOUT] = "gnome-session-quit --logout"
-        commands[Items.REBOOT] = "gnome-session-quit --reboot"
-        commands[Items.POWEROFF] = "gnome-session-quit --power-off"
-    elif desktop_type is Desktops.KDE:
-        commands[
-            Items.LOCK
-        ] = "dbus-send --dest=org.freedesktop.ScreenSaver --type=method_call /ScreenSaver org.freedesktop.ScreenSaver.Lock"
-        commands[Items.LOGOUT] = "qdbus org.kde.ksmserver /KSMServer logout 0 0 0"
-        commands[Items.REBOOT] = "qdbus org.kde.ksmserver /KSMServer logout 0 1 0"
-        commands[Items.POWEROFF] = "qdbus org.kde.ksmserver /KSMServer logout 0 2 0"
-    elif desktop_type is Desktops.CINNAMON:
-        commands[Items.LOCK] = "cinnamon-screensaver-command --lock"
-        commands[Items.LOGOUT] = "cinnamon-session-quit --logout"
-        commands[Items.REBOOT] = "cinnamon-session-quit --reboot"
-        commands[Items.POWEROFF] = "cinnamon-session-quit --power-off"
-    elif desktop_type is Desktops.MATE:
-        commands[Items.LOCK] = "mate-screensaver-command --lock"
-        commands[Items.LOGOUT] = "mate-session-save --logout-dialog"
-        commands[
-            Items.SUSPEND
-        ] = 'sh -c "mate-screensaver-command --lock && systemctl suspend -i"'
-        commands[
-            Items.HIBERNATE
-        ] = 'sh -c "mate-screensaver-command --lock && systemctl hibernate -i"'
-        commands[Items.REBOOT] = "mate-session-save --shutdown-dialog"
-        commands[Items.POWEROFF] = "mate-session-save --shutdown-dialog"
-    elif desktop_type is Desktops.XFCE:
-        commands[Items.LOCK] = "xflock4"
-        commands[Items.LOGOUT] = "xfce4-session-logout --logout"
-        commands[Items.SUSPEND] = "xfce4-session-logout --suspend"
-        commands[Items.HIBERNATE] = "xfce4-session-logout --hibernate"
-        commands[Items.REBOOT] = "xfce4-session-logout --reboot"
-        commands[Items.POWEROFF] = "xfce4-session-logout --halt"
-
-    return commands
+            return RenderResultListAction(self.__result_items)
 
 
 if __name__ == "__main__":

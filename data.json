@@ -1,0 +1,95 @@
+{
+    "entries": {
+        "lock": {
+            "name": "Lock",
+            "description": "Lock the session.",
+            "icon": "system-lock-screen",
+            "aliases": ["lock"],
+            "commands": {
+                "default": "xdg-screensaver lock",
+                "gnome": "gnome-screensaver-command --lock",
+                "kde": "dbus-send --dest=org.freedesktop.ScreenSaver --type=method_call /ScreenSaver org.freedesktop.ScreenSaver.Lock",
+                "cinnamon": "cinnamon-screensaver-command --lock",
+                "mate": "mate-screensaver-command --lock",
+                "xfce": "xflock4"
+            }
+        },
+        "logout": {
+            "name": "Log out",
+            "description": "Quit the session.",
+            "icon": "system-log-out",
+            "aliases": ["log out", "logout", "leave"],
+            "commands": {
+                "default": null,
+                "gnome": "gnome-session-quit --logout",
+                "kde": "qdbus org.kde.ksmserver /KSMServer logout 0 0 0",
+                "cinnamon": "cinnamon-session-quit --logout",
+                "mate": "mate-session-save --logout-dialog",
+                "xfce": "xfce4-session-logout --logout"
+            }
+        },
+        "suspend": {
+            "name": "Suspend",
+            "description": "Suspend to memory.",
+            "icon": "system-suspend",
+            "aliases": ["suspend", "sleep"],
+            "commands": {
+                "default": "systemctl suspend -i",
+                "gnome": null,
+                "kde": null,
+                "cinnamon": null,
+                "mate": "sh -c 'mate-screensaver-command --lock && systemctl suspend -i'",
+                "xfce": "xfce4-session-logout --suspend"
+            }
+        },
+        "hibernate": {
+            "name": "Hibernate",
+            "description": "Suspend to disk.",
+            "icon": "system-suspend-hibernate",
+            "aliases": ["suspend", "hibernate"],
+            "commands": {
+                "default": "systemctl hibernate -i",
+                "gnome": null,
+                "kde": null,
+                "cinnamon": null,
+                "mate": "sh -c 'mate-screensaver-command --lock && systemctl hibernate -i'",
+                "xfce": "xfce4-session-logout --hibernate"
+            }
+        },
+        "reboot": {
+            "name": "Restart",
+            "description": "Restart the machine.",
+            "icon": "system-reboot",
+            "aliases": ["restart", "reboot"],
+            "commands": {
+                "default": "systemctl reboot -i",
+                "gnome": "gnome-session-quit --reboot",
+                "kde": "qdbus org.kde.ksmserver /KSMServer logout 0 1 0",
+                "cinnamon": "cinnamon-session-quit --reboot",
+                "mate": "mate-session-save --shutdown-dialog",
+                "xfce": "xfce4-session-logout --reboot"
+            }
+        },
+        "poweroff": {
+            "name": "Shut down",
+            "description": "Shut down the machine.",
+            "icon": "system-shutdown",
+            "aliases": ["shut down", "shutdown", "poweroff", "halt"],
+            "commands": {
+                "default": "systemctl poweroff -i",
+                "gnome": "gnome-session-quit --power-off",
+                "kde": "qdbus org.kde.ksmserver /KSMServer logout 0 2 0",
+                "cinnamon": "cinnamon-session-quit --power-off",
+                "mate": "mate-session-save --shutdown-dialog",
+                "xfce": "xfce4-session-logout --halt"
+            }
+        }
+    },
+    "desktops": {
+        "gnome": ["Unity", "Pantheon", "GNOME"],
+        "kde": ["kde-plasma", "KDE"],
+        "cinnamon": ["X-Cinnamon", "Cinnamon"],
+        "mate": ["MATE"],
+        "xfce": ["XFCE"]
+    }
+}
