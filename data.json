@@ -1,6 +1,6 @@
 {
-    "entries": {
-        "lock": {
+    "entries": [
+        {
             "name": "Lock",
             "description": "Lock the session.",
             "icon": "system-lock-screen",
@@ -14,7 +14,7 @@
                 "xfce": "xflock4"
             }
         },
-        "logout": {
+        {
             "name": "Log out",
             "description": "Quit the session.",
             "icon": "system-log-out",
@@ -28,7 +28,7 @@
                 "xfce": "xfce4-session-logout --logout"
             }
         },
-        "suspend": {
+        {
             "name": "Suspend",
             "description": "Suspend to memory.",
             "icon": "system-suspend",
@@ -42,7 +42,7 @@
                 "xfce": "xfce4-session-logout --suspend"
             }
         },
-        "hibernate": {
+        {
             "name": "Hibernate",
             "description": "Suspend to disk.",
             "icon": "system-suspend-hibernate",
@@ -56,7 +56,7 @@
                 "xfce": "xfce4-session-logout --hibernate"
             }
         },
-        "reboot": {
+        {
             "name": "Restart",
             "description": "Restart the machine.",
             "icon": "system-reboot",
@@ -70,7 +70,7 @@
                 "xfce": "xfce4-session-logout --reboot"
             }
         },
-        "poweroff": {
+        {
             "name": "Shut down",
             "description": "Shut down the machine.",
             "icon": "system-shutdown",
@@ -84,7 +84,7 @@
                 "xfce": "xfce4-session-logout --halt"
             }
         }
-    },
+    ],
     "desktops": {
         "gnome": ["Unity", "Pantheon", "GNOME"],
         "kde": ["kde-plasma", "KDE"],

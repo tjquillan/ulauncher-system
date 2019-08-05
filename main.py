@@ -2,7 +2,7 @@ import json
 import logging
 import os
 
-from typing import Dict, List
+from typing import List
 
 import gi
 
@@ -77,20 +77,15 @@ class EntryIndex:
         desktop: str = get_desktop(data["desktops"])
         icon_theme: Gtk.IconTheme = Gtk.IconTheme.get_default()
 
-        self.__entries: Dict[str, Entry] = {
-            entry: Entry(data["entries"][entry], desktop, icon_theme)
-            for entry in data["entries"].keys()
-            if Entry(data["entries"][entry], desktop, icon_theme).command
-        }
-        self.__aliases: List[List[str]] = [
-            entry.aliases for entry in self.__entries.values()
+        self.__entries: List[Entry] = [
+            Entry(entry, desktop, icon_theme)
+            for entry in data["entries"]
+            if Entry(entry, desktop, icon_theme).command
         ]
-
-    def get_entry(self, id) -> Entry:
-        return self.__entries[id]
+        self.__aliases: List[List[str]] = [entry.aliases for entry in self.__entries]
 
     @property
-    def entries(self) -> Dict[str, Entry]:
+    def entries(self) -> List[Entry]:
         return self.__entries
 
     @property
@@ -114,7 +109,7 @@ class KeywordQueryEventListener(EventListener):
                 description=entry.description,
                 on_enter=RunScriptAction(entry.command),
             )
-            for entry in self.__entries.entries.values()
+            for entry in self.__entries.entries
         ]
 
     def on_event(self, event: KeywordQueryEvent, extension):
