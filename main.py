@@ -21,6 +21,14 @@ logger: logging.Logger = logging.getLogger(__name__)
 
 
 class Entry:
+    __slots__: List[str] = [
+        "__name",
+        "__description",
+        "__icon",
+        "__aliases",
+        "__command",
+    ]
+
     def __init__(self, data: dict, desktop: str, icon_theme: Gtk.IconTheme):
         def get_icon(name) -> str:
             icon: Gtk.IconInfo = icon_theme.lookup_icon(
@@ -61,6 +69,8 @@ class Entry:
 
 
 class EntryIndex:
+    __slots__: List[str] = ["__entries", "__aliases"]
+
     def __init__(self):
         def get_desktop(desktops: dict) -> str:
             current_desktop = os.environ.get("XDG_CURRENT_DESKTOP")
