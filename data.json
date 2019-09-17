@@ -11,7 +11,8 @@
                 "kde": "dbus-send --dest=org.freedesktop.ScreenSaver --type=method_call /ScreenSaver org.freedesktop.ScreenSaver.Lock",
                 "cinnamon": "cinnamon-screensaver-command --lock",
                 "mate": "mate-screensaver-command --lock",
-                "xfce": "xflock4"
+                "xfce": "xflock4",
+                "sway": "swaylock"
             }
         },
         {
@@ -25,7 +26,8 @@
                 "kde": "qdbus org.kde.ksmserver /KSMServer logout 0 0 0",
                 "cinnamon": "cinnamon-session-quit --logout",
                 "mate": "mate-session-save --logout-dialog",
-                "xfce": "xfce4-session-logout --logout"
+                "xfce": "xfce4-session-logout --logout",
+                "sway": "swaymsg exit"
             }
         },
         {
@@ -39,7 +41,8 @@
                 "kde": null,
                 "cinnamon": null,
                 "mate": "sh -c 'mate-screensaver-command --lock && systemctl suspend -i'",
-                "xfce": "xfce4-session-logout --suspend"
+                "xfce": "xfce4-session-logout --suspend",
+                "sway": "systemctl suspend -i"
             }
         },
         {
@@ -53,7 +56,8 @@
                 "kde": null,
                 "cinnamon": null,
                 "mate": "sh -c 'mate-screensaver-command --lock && systemctl hibernate -i'",
-                "xfce": "xfce4-session-logout --hibernate"
+                "xfce": "xfce4-session-logout --hibernate",
+                "sway": null
             }
         },
         {
@@ -67,7 +71,8 @@
                 "kde": "qdbus org.kde.ksmserver /KSMServer logout 0 1 0",
                 "cinnamon": "cinnamon-session-quit --reboot",
                 "mate": "mate-session-save --shutdown-dialog",
-                "xfce": "xfce4-session-logout --reboot"
+                "xfce": "xfce4-session-logout --reboot",
+                "sway": "systemctl reboot -i"
             }
         },
         {
@@ -81,7 +86,8 @@
                 "kde": "qdbus org.kde.ksmserver /KSMServer logout 0 2 0",
                 "cinnamon": "cinnamon-session-quit --power-off",
                 "mate": "mate-session-save --shutdown-dialog",
-                "xfce": "xfce4-session-logout --halt"
+                "xfce": "xfce4-session-logout --halt",
+                "sway": "systemctl poweroff -i"
             }
         }
     ],
@@ -90,6 +96,7 @@
         "kde": ["kde-plasma", "KDE"],
         "cinnamon": ["X-Cinnamon", "Cinnamon"],
         "mate": ["MATE"],
-        "xfce": ["XFCE"]
+        "xfce": ["XFCE"],
+        "sway": ["SWAY", "sway"]
     }
 }

@@ -73,7 +73,11 @@ class EntryIndex:
 
     def __init__(self):
         def get_desktop(desktops: dict) -> str:
-            current_desktop = os.environ.get("XDG_CURRENT_DESKTOP")
+            # Window managers do not set anything on XDG_CURRENT_DESKTOP
+            if os.environ.get('SWAYSOCK'):
+                current_desktop = 'sway'
+            else:
+                current_desktop = os.environ.get("XDG_CURRENT_DESKTOP")
 
             for desktop in desktops.keys():
                 if any(current_desktop in s for s in desktops[desktop]):

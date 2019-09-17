@@ -18,6 +18,7 @@ This is a extension for [Ulauncher](https://ulauncher.io/) that allows you to:
   * Cinnamon
   * Mate
   * XFCE
+  * Sway
 * It uses the system icon theme for all but its required icon.
 * More in the future!
 

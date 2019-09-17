@@ -19,6 +19,7 @@ class Desktops(Enum):
     CINNAMON = 2
     MATE = 3
     XFCE = 4
+    SWAY = 5
 
 
 ITEM_NAMES: List[str] = [
@@ -63,4 +64,5 @@ DESKTOP_ALIASES: Dict[Desktops, List[str]] = {
     Desktops.CINNAMON: ["X-Cinnamon", "Cinnamon"],
     Desktops.MATE: ["MATE"],
     Desktops.XFCE: ["XFCE"],
+    Desktops.SWAY: ["sway"]
 }
