@@ -1,20 +1,17 @@
 import json
 import logging
 import os
-
 from pathlib import Path
 from typing import Dict, List, Optional
 
 import gi
 import xdg
-
 from ulauncher.api.client.EventListener import EventListener
 from ulauncher.api.client.Extension import Extension
 from ulauncher.api.shared.action.RenderResultListAction import RenderResultListAction
 from ulauncher.api.shared.action.RunScriptAction import RunScriptAction
 from ulauncher.api.shared.event import KeywordQueryEvent
 from ulauncher.api.shared.item.ExtensionResultItem import ExtensionResultItem
-
 
 gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk  # isort:skip # noqa: E261
@@ -33,12 +30,15 @@ class Entry:
     ]
 
     def __init__(self, data: dict, icon_theme: Gtk.IconTheme):
-        self.__name: str = data["name"]
-        self.__description: str = data["description"]
         self.__icon_theme: Gtk.IconTheme = icon_theme
-        self.__icon: str = self.__get_icon(data["icon"])
-        self.__aliases: List[str] = data["aliases"]
-        self.__command: str = data["command"]
+        try:
+            self.__name: str = data["name"]
+            self.__description: str = data["description"]
+            self.__icon: str = self.__get_icon(data["icon"])
+            self.__aliases: List[str] = data["aliases"]
+            self.__command: str = data["command"]
+        except KeyError as e:
+            raise Exception(f"{e} not found in data")
 
     def __get_icon(self, icon_name: str) -> str:
         icon: Gtk.IconInfo = self.__icon_theme.lookup_icon(
@@ -114,8 +114,6 @@ class EntryIndex:
                 open(f"{xdg.BaseDirectory.xdg_config_home}/ulauncher-system.json")
             )
             update_entries(user_entries)
-
-        logger.error(entries.keys())
 
         icon_theme: Gtk.IconTheme = Gtk.IconTheme.get_default()
         self.__entries: List[Entry] = [
