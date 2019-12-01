@@ -75,9 +75,10 @@ class EntryIndex:
         def get_desktop(desktops: dict) -> str:
             current_desktop = os.environ.get("XDG_CURRENT_DESKTOP")
 
-            for desktop in desktops.keys():
-                if any(current_desktop in s for s in desktops[desktop]):
-                    return desktop
+            if current_desktop:
+                for desktop in desktops.keys():
+                    if any(current_desktop in s for s in desktops[desktop]):
+                        return desktop
 
             return "default"
 
