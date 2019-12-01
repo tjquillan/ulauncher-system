@@ -1,0 +1,25 @@
+{
+    "gnome": {
+        "env": "XDG_CURRENT_DESKTOP",
+        "aliases": ["Unity", "Pantheon", "GNOME"]
+    },
+    "kde": {
+        "env": "XDG_CURRENT_DESKTOP",
+        "aliases": ["kde-plasma", "KDE"]
+    },
+    "cinnamon": {
+        "env": "XDG_CURRENT_DESKTOP",
+        "aliases": ["X-Cinnamon", "Cinnamon"]
+    },
+    "mate": {
+        "env": "XDG_CURRENT_DESKTOP",
+        "aliases": ["MATE"]
+    },
+    "xfce": {
+        "env": "XDG_CURRENT_DESKTOP",
+        "aliases": ["XFCE"]
+    },
+    "sway": {
+        "env": "SWAYSOCK"
+    }
+}
