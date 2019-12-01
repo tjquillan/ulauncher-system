@@ -1,18 +1,20 @@
 import json
 import logging
 import os
+
 from pathlib import Path
 from typing import Dict, List, Optional
 
 import gi
 import xdg
+
 from ulauncher.api.client.EventListener import EventListener
 from ulauncher.api.client.Extension import Extension
-from ulauncher.api.shared.action.RenderResultListAction import \
-    RenderResultListAction
+from ulauncher.api.shared.action.RenderResultListAction import RenderResultListAction
 from ulauncher.api.shared.action.RunScriptAction import RunScriptAction
 from ulauncher.api.shared.event import KeywordQueryEvent
 from ulauncher.api.shared.item.ExtensionResultItem import ExtensionResultItem
+
 
 gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk  # isort:skip # noqa: E261
@@ -39,27 +41,15 @@ class Entry:
         self.__command: str = data["command"]
 
     def __get_icon(self, icon_name: str) -> str:
-        icon: Gtk.IconInfo = self.__icon_theme.lookup_icon(icon_name, 32, Gtk.IconLookupFlags.GENERIC_FALLBACK)
+        icon: Gtk.IconInfo = self.__icon_theme.lookup_icon(
+            icon_name, 32, Gtk.IconLookupFlags.GENERIC_FALLBACK
+        )
 
         if icon:
             return icon.get_filename()
         else:
             logger.warning("No icon found for: {}".format(icon_name))
             return ""
-
-    def update(self, data: dict):
-        for item_key in data:
-            item: str = ""
-
-            try:
-                item = data[item]
-            except AttributeError:
-                pass
-
-            if item_key != "icon":
-                self.__dict__[f"__{item}"] = item
-            else:
-                self.__dict__[f"__{item}"] = self.__get_icon(data["icon"])
 
     @property
     def name(self) -> str:
@@ -101,31 +91,35 @@ class EntryIndex:
 
         file_path: str = os.path.dirname(os.path.realpath(__file__))
 
-        entries = json.load(
-            open(f"{file_path}/entries/default.json")
+        entries: dict = json.load(open(f"{file_path}/entries/default.json"))
+        desktop: Optional[str] = get_desktop(
+            json.load(open(f"{file_path}/desktops.json"))
         )
-        desktop: Optional[str] = get_desktop(json.load(
-            open(f"{file_path}/desktops.json")
-        ))
 
         def update_entries(new_entries):
             for entry_key in new_entries.keys():
                 for value_key in new_entries[entry_key].keys():
+                    if entry_key not in entries:
+                        entries[entry_key] = {}
                     entries[entry_key][value_key] = new_entries[entry_key][value_key]
 
         if desktop and Path(f"{file_path}/entries/{desktop}.json").exists():
-            desktop_entries: Dict[dict] = json.load(open(f"{file_path}/entries/{desktop}.json"))
+            desktop_entries: Dict[dict] = json.load(
+                open(f"{file_path}/entries/{desktop}.json")
+            )
             update_entries(desktop_entries)
 
         if Path(f"{xdg.BaseDirectory.xdg_config_home}/ulauncher-system.json").exists():
-            user_entries = json.load(open(f"{xdg.BaseDirectory.xdg_config_home}/ulauncher-system.json"))
+            user_entries = json.load(
+                open(f"{xdg.BaseDirectory.xdg_config_home}/ulauncher-system.json")
+            )
             update_entries(user_entries)
+
+        logger.error(entries.keys())
 
         icon_theme: Gtk.IconTheme = Gtk.IconTheme.get_default()
         self.__entries: List[Entry] = [
-            Entry(entry, icon_theme)
-            for entry in entries.values()
-            if entry["command"]
+            Entry(entry, icon_theme) for entry in entries.values() if entry["command"]
         ]
         self.__aliases: List[List[str]] = [entry.aliases for entry in self.__entries]
 
