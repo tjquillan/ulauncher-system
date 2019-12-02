@@ -1,0 +1,14 @@
+{
+    "lock": {
+        "command": "dbus-send --dest=org.freedesktop.ScreenSaver --type=method_call /ScreenSaver org.freedesktop.ScreenSaver.Lock"
+    },
+    "log-out": {
+        "command": "qdbus org.kde.ksmserver /KSMServer logout 0 0 0"
+    },
+    "restart": {
+        "command": "qdbus org.kde.ksmserver /KSMServer logout 0 1 0"
+    },
+    "shutdown": {
+        "command": "qdbus org.kde.ksmserver /KSMServer logout 0 2 0"
+    }
+}

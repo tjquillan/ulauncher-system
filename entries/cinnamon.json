@@ -1,0 +1,14 @@
+{
+    "lock": {
+        "command": "cinnamon-screensaver-command --lock"
+    },
+    "log-out": {
+        "command": "cinnamon-session-quit --logout"
+    },
+    "restart": {
+        "command": "cinnamon-session-quit --reboot"
+    },
+    "shutdown": {
+        "command": "cinnamon-session-quit --power-off"
+    }
+}
