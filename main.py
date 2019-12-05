@@ -1,17 +1,20 @@
 import json
 import logging
 import os
+
 from pathlib import Path
 from typing import Dict, List, Optional
 
 import gi
 import xdg
+
 from ulauncher.api.client.EventListener import EventListener
 from ulauncher.api.client.Extension import Extension
 from ulauncher.api.shared.action.RenderResultListAction import RenderResultListAction
 from ulauncher.api.shared.action.RunScriptAction import RunScriptAction
 from ulauncher.api.shared.event import KeywordQueryEvent
 from ulauncher.api.shared.item.ExtensionResultItem import ExtensionResultItem
+
 
 gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk  # isort:skip # noqa: E261
@@ -97,8 +100,8 @@ class EntryIndex:
         )
 
         def update_entries(new_entries):
-            for entry_key in new_entries.keys():
-                for value_key in new_entries[entry_key].keys():
+            for entry_key in new_entries:
+                for value_key in new_entries[entry_key]:
                     if entry_key not in entries:
                         entries[entry_key] = {}
                     entries[entry_key][value_key] = new_entries[entry_key][value_key]
