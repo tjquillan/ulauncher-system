@@ -51,7 +51,7 @@ class Entry:
         if icon:
             return icon.get_filename()
         else:
-            logger.warning("No icon found for: {}".format(icon_name))
+            logger.warning(f"No icon found for: {icon_name}")
             return ""
 
     @property
@@ -113,7 +113,7 @@ class EntryIndex:
             update_entries(desktop_entries)
 
         if Path(f"{xdg.BaseDirectory.xdg_config_home}/ulauncher-system.json").exists():
-            user_entries = json.load(
+            user_entries: Dict[dict] = json.load(
                 open(f"{xdg.BaseDirectory.xdg_config_home}/ulauncher-system.json")
             )
             update_entries(user_entries)
