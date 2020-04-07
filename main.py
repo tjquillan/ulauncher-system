@@ -85,7 +85,7 @@ class EntryIndex:
 
                 env_var: Optional[str] = os.environ.get(desktop["env"])
                 try:
-                    if any(env_var in s for s in desktop["aliases"]):
+                    if env_var is not None and any(env_var in s for s in desktop["aliases"]):
                         return desktop_key
                 except KeyError:
                     if env_var:
