@@ -4,14 +4,14 @@
         "description": "Lock the session.",
         "icon": "system-lock-screen",
         "aliases": ["lock"],
-        "command": "xdg-screensaver lock"
+        "command": "loginctl lock-session"
     },
     "log-out": {
         "name": "Log out",
         "description": "Quit the session.",
         "icon": "system-log-out",
         "aliases": ["log out", "logout", "leave"],
-        "command": null
+        "command": "loginctl terminate-session"
     },
     "suspend": {
         "name": "Suspend",
