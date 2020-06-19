@@ -4,7 +4,7 @@
         "description": "Lock the session.",
         "icon": "system-lock-screen",
         "aliases": ["lock"],
-        "command": "xdg-screensaver lock"
+        "command": "loginctl lock-session"
     },
     "log-out": {
         "name": "Log out",
