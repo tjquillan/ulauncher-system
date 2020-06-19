@@ -11,7 +11,7 @@
         "description": "Quit the session.",
         "icon": "system-log-out",
         "aliases": ["log out", "logout", "leave"],
-        "command": "loginctl terminate-session"
+        "command": null
     },
     "suspend": {
         "name": "Suspend",
