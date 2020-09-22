@@ -30,4 +30,4 @@ jobs:
     - name: Lint with mypy
       run: |
         pip install mypy
-        mypy *.py
+        mypy --python-version ${{ matrix.python-version }} *.py
