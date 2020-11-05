@@ -4,4 +4,4 @@ lint:
 
 format:
 	black *.py
-	isort -y
+	isort *.py
