@@ -17,7 +17,7 @@ from ulauncher.api.shared.item.ExtensionResultItem import ExtensionResultItem
 
 
 gi.require_version("Gtk", "3.0")
-from gi.repository import Gtk  # isort:skip # noqa: E261
+from gi.repository import Gtk  # isort:skip # noqa: E402
 
 logger: logging.Logger = logging.getLogger(__name__)
 
@@ -75,23 +75,24 @@ class Entry:
         return self.__command
 
 
+def get_desktop(desktops: dict) -> Optional[str]:
+    for desktop_key in desktops:
+        desktop = desktops[desktop_key]
+
+        env_var: Optional[str] = os.environ.get(desktop["env"])
+        if env_var:
+            try:
+                if any(env_var in s for s in desktop["aliases"]):
+                    return desktop_key
+            except KeyError:
+                return desktop_key
+    return None
+
+
 class EntryIndex:
     __slots__: List[str] = ["__entries", "__aliases"]
 
     def __init__(self):
-        def get_desktop(desktops: dict) -> Optional[str]:
-            for desktop_key in desktops:
-                desktop = desktops[desktop_key]
-
-                env_var: Optional[str] = os.environ.get(desktop["env"])
-                if env_var:
-                    try:
-                        if any(env_var in s for s in desktop["aliases"]):
-                            return desktop_key
-                    except KeyError:
-                        return desktop_key
-            return None
-
         file_path: str = os.path.dirname(os.path.realpath(__file__))
 
         entries: dict = json.load(open(f"{file_path}/entries/default.json"))
