@@ -2,7 +2,7 @@ import json
 import logging
 import os
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Any, Dict, List, Optional
 
 import gi
 import xdg
@@ -17,6 +17,8 @@ gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk  # isort:skip # noqa: E402
 
 logger: logging.Logger = logging.getLogger(__name__)
+
+USER_CONFIG_DIR = f"{xdg.BaseDirectory.xdg_config_home}/ulauncher-system"
 
 
 class Entry:
@@ -72,7 +74,16 @@ class Entry:
         return self.__command
 
 
-def get_desktop(desktops: dict) -> Optional[str]:
+def get_desktops(file_path: str) -> Dict[str, Dict[str, Any]]:
+    desktops: Dict[str, Dict[str, Any]] = json.load(open(f"{file_path}/desktops.json"))
+    if (user_desktops_path := Path(f"{USER_CONFIG_DIR}/desktops.json")).exists():
+        user_desktops = json.load(user_desktops_path.open())
+        for desktop in user_desktops:
+            desktops[desktop] = user_desktops[desktop]
+    return desktops
+
+
+def get_desktop(desktops: Dict[str, Dict[str, Any]]) -> Optional[str]:
     for desktop_key in desktops:
         desktop = desktops[desktop_key]
 
@@ -92,29 +103,28 @@ class EntryIndex:
     def __init__(self):
         file_path: str = os.path.dirname(os.path.realpath(__file__))
 
-        entries: dict = json.load(open(f"{file_path}/entries/default.json"))
-        desktop: Optional[str] = get_desktop(
-            json.load(open(f"{file_path}/desktops.json"))
+        entries: Dict[str, Dict[str, str]] = json.load(
+            open(f"{file_path}/entries/default.json")
         )
+        desktop: Optional[str] = get_desktop(get_desktops(file_path))
 
-        def update_entries(new_entries):
+        def update_entries(new_entries: Dict[str, Dict[str, str]]):
             for entry_key in new_entries:
                 for value_key in new_entries[entry_key]:
                     if entry_key not in entries:
                         entries[entry_key] = {}
                     entries[entry_key][value_key] = new_entries[entry_key][value_key]
 
-        if desktop and Path(f"{file_path}/entries/{desktop}.json").exists():
-            desktop_entries: Dict[dict] = json.load(
-                open(f"{file_path}/entries/{desktop}.json")
-            )
+        if desktop and (path := Path(f"{file_path}/entries/{desktop}.json")).exists():
+            desktop_entries: Dict[str, Dict[str, str]] = json.load(path.open())
             update_entries(desktop_entries)
 
-        if Path(f"{xdg.BaseDirectory.xdg_config_home}/ulauncher-system.json").exists():
-            user_entries: Dict[dict] = json.load(
-                open(f"{xdg.BaseDirectory.xdg_config_home}/ulauncher-system.json")
-            )
-            update_entries(user_entries)
+        if (
+            desktop
+            and (path := Path(f"{USER_CONFIG_DIR}/entries/{desktop}.json")).exists()
+        ):
+            desktop_entries: Dict[str, Dict[str, str]] = json.load(path.open())
+            update_entries(desktop_entries)
 
         icon_theme: Gtk.IconTheme = Gtk.IconTheme.get_default()
         self.__entries: List[Entry] = [
