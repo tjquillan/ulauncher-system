@@ -1,5 +1,7 @@
 # Ulauncher-System
 
+**Important:** This extension requires python 3.8 or above
+
 This is a extension for [Ulauncher](https://ulauncher.io/) that allows you to:
 
 * Lock
