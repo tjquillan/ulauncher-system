@@ -76,7 +76,8 @@ class Entry:
 
 def get_desktops(file_path: str) -> Dict[str, Dict[str, Any]]:
     desktops: Dict[str, Dict[str, Any]] = json.load(open(f"{file_path}/desktops.json"))
-    if (user_desktops_path := Path(f"{USER_CONFIG_DIR}/desktops.json")).exists():
+    user_desktops_path = Path(f"{USER_CONFIG_DIR}/desktops.json")
+    if user_desktops_path.exists():
         user_desktops = json.load(user_desktops_path.open())
         for desktop in user_desktops:
             desktops[desktop] = user_desktops[desktop]
@@ -115,14 +116,13 @@ class EntryIndex:
                         entries[entry_key] = {}
                     entries[entry_key][value_key] = new_entries[entry_key][value_key]
 
-        if desktop and (path := Path(f"{file_path}/entries/{desktop}.json")).exists():
+        path = Path(f"{file_path}/entries/{desktop}.json")
+        if desktop and path.exists():
             desktop_entries: Dict[str, Dict[str, str]] = json.load(path.open())
             update_entries(desktop_entries)
 
-        if (
-            desktop
-            and (path := Path(f"{USER_CONFIG_DIR}/entries/{desktop}.json")).exists()
-        ):
+        path = Path(f"{USER_CONFIG_DIR}/entries/{desktop}.json")
+        if desktop and path.exists():
             desktop_entries: Dict[str, Dict[str, str]] = json.load(path.open())
             update_entries(desktop_entries)
 
