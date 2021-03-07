@@ -40,5 +40,12 @@
         "icon": "system-shutdown",
         "aliases": ["shut down", "shutdown", "poweroff", "halt"],
         "command": "systemctl poweroff -i"
+    },
+    "bios": {
+        "name": "Bios",
+        "description": "Boot to Bios",
+        "icon": "application-x-firmware",
+        "aliases": ["bios","firmware"],
+        "command": "systemctl reboot --firmware-setup"
     }
 }
