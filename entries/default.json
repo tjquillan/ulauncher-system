@@ -42,8 +42,8 @@
         "command": "systemctl poweroff -i"
     },
     "bios": {
-        "name": "Bios",
-        "description": "Restart to Bios",
+        "name": "Restart to BIOS",
+        "description": "Restart to the system BIOS",
         "icon": "application-x-firmware",
         "aliases": ["bios","firmware","restart","reboot"],
         "command": "systemctl reboot --firmware-setup"
