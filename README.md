@@ -8,7 +8,7 @@ This is a extension for [Ulauncher](https://ulauncher.io/) that allows you to:
 * Hibernate
 * Reboot
 * Shutdown
-
+* Reboot to Bios
 ## What sets it appart?
 
 * It will attempt to work nicely with the Desktop Environment of you choice. Below are the currently supported DEs.
