@@ -43,9 +43,9 @@
     },
     "bios": {
         "name": "Bios",
-        "description": "Boot to Bios",
+        "description": "Restart to Bios",
         "icon": "application-x-firmware",
-        "aliases": ["bios","firmware"],
+        "aliases": ["bios","firmware","restart","reboot"],
         "command": "systemctl reboot --firmware-setup"
     }
 }
