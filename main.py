@@ -13,11 +13,6 @@ from ulauncher.api.shared.action.RunScriptAction import RunScriptAction
 from ulauncher.api.shared.event import KeywordQueryEvent
 from ulauncher.api.shared.item.ExtensionResultItem import ExtensionResultItem
 
-try:
-    gi.require_version("Gdk", "4.0")
-except ValueError:
-    gi.require_version("Gdk", "3.0")
-
 gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk  # isort:skip # noqa: E402
 
