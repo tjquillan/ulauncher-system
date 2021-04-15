@@ -116,7 +116,7 @@ class EntryIndex:
                         entries[entry_key] = {}
                     entries[entry_key][value_key] = new_entries[entry_key][value_key]
 
-        path = Path(f"{file_path}/entries/{desktop}.json")
+        path: Path = Path(f"{file_path}/entries/{desktop}.json")
         if desktop and path.exists():
             desktop_entries: Dict[str, Dict[str, str]] = json.load(path.open())
             update_entries(desktop_entries)
@@ -160,7 +160,7 @@ class KeywordQueryEventListener(EventListener):
             for entry in self.__entries.entries
         ]
 
-    def on_event(self, event: KeywordQueryEvent, extension):
+    def on_event(self, event: KeywordQueryEvent, _) -> RenderResultListAction:
         arg: str = event.get_argument()
         if arg:
             return RenderResultListAction(
