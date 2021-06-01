@@ -5,16 +5,21 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 import gi
-import xdg
-from ulauncher.api.client.EventListener import EventListener
-from ulauncher.api.client.Extension import Extension
-from ulauncher.api.shared.action.RenderResultListAction import RenderResultListAction
-from ulauncher.api.shared.action.RunScriptAction import RunScriptAction
-from ulauncher.api.shared.event import KeywordQueryEvent
-from ulauncher.api.shared.item.ExtensionResultItem import ExtensionResultItem
 
 gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk  # isort:skip # noqa: E402
+
+import xdg  # noqa: E402
+from ulauncher.api.client.EventListener import EventListener  # noqa: E402
+from ulauncher.api.client.Extension import Extension  # noqa: E402
+from ulauncher.api.shared.action.RenderResultListAction import (  # noqa: E402
+    RenderResultListAction,
+)
+from ulauncher.api.shared.action.RunScriptAction import RunScriptAction  # noqa: E402
+from ulauncher.api.shared.event import KeywordQueryEvent  # noqa: E402
+from ulauncher.api.shared.item.ExtensionResultItem import (  # noqa: E402
+    ExtensionResultItem,
+)
 
 logger: logging.Logger = logging.getLogger(__name__)
 
