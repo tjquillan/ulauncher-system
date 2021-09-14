@@ -36,7 +36,7 @@ class Entry:
         "__command",
     ]
 
-    def __init__(self, data: dict, icon_theme: Gtk.IconTheme):
+    def __init__(self, data: Dict[str, Any], icon_theme: Gtk.IconTheme):
         self.__icon_theme: Gtk.IconTheme = icon_theme
         try:
             self.__name: str = data["name"]
