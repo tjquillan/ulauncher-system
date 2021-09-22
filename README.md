@@ -9,6 +9,7 @@ This is a extension for [Ulauncher](https://ulauncher.io/) that allows you to:
 * Reboot
 * Shutdown
 * Reboot to Bios
+
 ## What sets it appart?
 
 * It will attempt to work nicely with the Desktop Environment of you choice. Below are the currently supported DEs.
@@ -25,6 +26,13 @@ This is a extension for [Ulauncher](https://ulauncher.io/) that allows you to:
 ## Configuration
 
 Every part of ulauncher-system is configurable. You can change and add new desktops to be detected and you can change and add commands for those desktops.
+
+### Configuration Load Order
+
+1. Default
+2. Desktop
+3. User Default
+4. User Desktop
 
 ### Changing and Adding Desktops
 
@@ -59,9 +67,11 @@ There are two ways to declare a desktop
 
 ### Changing and Adding to Desktop Entries
 
-To change and add desktop entries you will need to add files to `$XDG_CONFIG_HOME/ulauncher-system/entries/` in the form of `<desktop_key>.json` with `<desktop_key>` being the key of the desktop as specified in `desktop.json`. For examples of these see [default.json](https://github.com/iboyperson/ulauncher-system/blob/master/entries/default.json).
+To change and add desktop entries you will need to add files to `$XDG_CONFIG_HOME/ulauncher-system/entries/` in the form of `<desktop_key>.json`, with `<desktop_key>` being the key of the desktop as specified in `desktop.json`, or `default.json` for desktop agnostic configuration. For examples of these see [default.json](https://github.com/iboyperson/ulauncher-system/blob/master/entries/default.json).
 
 If you are using any of the keys defined in `default.json` you only need to define the values you want to override in your user copy. However, if you are adding a new key you must specify all the values.
+
+To disable an entry simply put `<key>: null` in your config.
 
 #### Values
 
@@ -74,6 +84,8 @@ If you are using any of the keys defined in `default.json` you only need to defi
 
 #### Example
 
+##### Basic Config
+
 ```json
 "lock": {
     "name": "Lock",
@@ -82,6 +94,12 @@ If you are using any of the keys defined in `default.json` you only need to defi
     "aliases": ["lock"],
     "command": "loginctl lock-session"
 }
+```
+
+##### Disable Entry
+
+```json
+"lock": null
 ```
 
 ---

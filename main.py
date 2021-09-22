@@ -114,22 +114,29 @@ class EntryIndex:
         )
         desktop: Optional[str] = get_desktop(get_desktops(file_path))
 
-        def update_entries(new_entries: Dict[str, Dict[str, str]]):
-            for entry_key in new_entries:
-                for value_key in new_entries[entry_key]:
-                    if entry_key not in entries:
-                        entries[entry_key] = {}
-                    entries[entry_key][value_key] = new_entries[entry_key][value_key]
+        def update_entries(path_str: str):
+            path: Path = Path(path_str)
+            if path.exists():
+                desktop_entries: Dict[str, Optional[Dict[str, str]]] = json.load(
+                    path.open()
+                )
+                for entry_key in desktop_entries:
+                    entry = desktop_entries[entry_key]
+                    if entry is None:
+                        # Remove the key from entries if it exists
+                        entries.pop(entry_key, None)
+                    elif entry_key not in entries:
+                        entries[entry_key] = entry.copy()
+                    else:
+                        entries[entry_key].update(entry)
 
-        path: Path = Path(f"{file_path}/entries/{desktop}.json")
-        if desktop and path.exists():
-            desktop_entries: Dict[str, Dict[str, str]] = json.load(path.open())
-            update_entries(desktop_entries)
+        if desktop:
+            update_entries(f"{file_path}/entries/{desktop}.json")
 
-        path = Path(f"{USER_CONFIG_DIR}/entries/{desktop}.json")
-        if desktop and path.exists():
-            desktop_entries: Dict[str, Dict[str, str]] = json.load(path.open())
-            update_entries(desktop_entries)
+        update_entries(f"{USER_CONFIG_DIR}/entries/default.json")
+
+        if desktop:
+            update_entries(f"{USER_CONFIG_DIR}/entries/{desktop}.json")
 
         icon_theme: Gtk.IconTheme = Gtk.IconTheme.get_default()
         self.__entries: List[Entry] = [
