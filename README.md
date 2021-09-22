@@ -27,6 +27,8 @@ This is a extension for [Ulauncher](https://ulauncher.io/) that allows you to:
 
 Every part of ulauncher-system is configurable. You can change and add new desktops to be detected and you can change and add commands for those desktops.
 
+Configurations are stored in `$XDG_CONFIG_HOME/ulauncher-system`. When `$XDG_CONFIG_HOME` is not defined it will default to `$HOME/.config` according to the [XDG Base Directory Specification](https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html)
+
 ### Configuration Load Order
 
 1. Default
