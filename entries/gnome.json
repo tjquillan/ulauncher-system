@@ -1,7 +1,4 @@
 {
-    "lock": {
-        "command": "gnome-screensaver-command --lock"
-    },
     "log-out": {
         "command": "gnome-session-quit --logout"
     },
