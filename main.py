@@ -126,7 +126,7 @@ class EntryIndex:
                         # Remove the key from entries if it exists
                         entries.pop(entry_key, None)
                     elif entry_key not in entries:
-                        entries[entry_key] = entry.copy()
+                        entries[entry_key] = entry
                     else:
                         entries[entry_key].update(entry)
 
