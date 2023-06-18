@@ -9,7 +9,6 @@ import gi
 gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk  # isort:skip # noqa: E402
 
-import xdg  # noqa: E402
 from ulauncher.api.client.EventListener import EventListener  # noqa: E402
 from ulauncher.api.client.Extension import Extension  # noqa: E402
 from ulauncher.api.shared.action.RenderResultListAction import (  # noqa: E402
@@ -23,8 +22,9 @@ from ulauncher.api.shared.item.ExtensionResultItem import (  # noqa: E402
 
 logger: logging.Logger = logging.getLogger(__name__)
 
-USER_CONFIG_DIR = f"{xdg.BaseDirectory.xdg_config_home}/ulauncher-system"
-
+USER_HOME_DIR = os.path.expanduser("~")
+XDG_CONFIG_HOME = os.environ.get("XDG_CONFIG_HOME", f"{USER_HOME_DIR}/.config")
+USER_CONFIG_DIR = f"{XDG_CONFIG_HOME}/ulauncher-system"
 
 class Entry:
     __slots__: List[str] = [
