@@ -22,6 +22,7 @@ from ulauncher.api.shared.item.ExtensionResultItem import (  # noqa: E402
 
 logger: logging.Logger = logging.getLogger(__name__)
 
+ULAUNCHER_SYSTEM_DIR = os.path.dirname(__file__)
 USER_HOME_DIR = os.path.expanduser("~")
 XDG_CONFIG_HOME = os.environ.get("XDG_CONFIG_HOME", f"{USER_HOME_DIR}/.config")
 USER_CONFIG_DIR = f"{XDG_CONFIG_HOME}/ulauncher-system"
@@ -139,6 +140,7 @@ class EntryIndex:
             update_entries(f"{USER_CONFIG_DIR}/entries/{desktop}.json")
 
         icon_theme: Gtk.IconTheme = Gtk.IconTheme.get_default()
+        icon_theme.append_search_path(f"{ULAUNCHER_SYSTEM_DIR}/images")
         self.__entries: List[Entry] = [
             Entry(entry, icon_theme) for entry in entries.values() if entry["command"]
         ]
